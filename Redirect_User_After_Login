@@ -1,6 +1,6 @@
 Redirect_Page_After_Login_AS_Per_Role
 
-========================== Page Rdirects  =================================
+========================== Page Redirects  =================================
 -------Add below lines-(Breez)AuthenticatedSessionController.php-----------------
 
  public function store(LoginRequest $request): RedirectResponse{
@@ -17,7 +17,7 @@ Redirect_Page_After_Login_AS_Per_Role
     }
 
 
-=====================Route Redirects ====================================
+===================== Route Redirects ====================================
 ---------Add below line to App\Providers\RouteServiceProvider---------
 
 $this->routes(function () {
