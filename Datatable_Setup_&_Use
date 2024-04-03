@@ -1,0 +1,145 @@
+01. What to add in Blade and Controller and ADVANCE TOPIC
+02. How to SHOW/ADD:
+    A> EDIT and DELETE Button
+    B> IF/ELSE data show like ACTIVE/INACTIVE
+    C> IMAGE
+    D> 
+
+
+==========================================================
+WEBSITE:-  https://yajrabox.com/docs/laravel-datatables/10.0/quick-starter
+
+-------------SETUP---------------
+ **Escape Vite option in CMD PROMPT, otherwise it will download all file
+CMD: > composer require yajra/laravel-datatables
+CREATE-TABLE: > php artisan datatables:make User  ***Here User is model name
+              > php artisan datatable:make RequestPendingVendor  --model  Vendor
+
+------------- USE -----------
+**CDN use is must.
+
+BLADE:-------
+  <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+  <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    {{ $dataTable->table() }}
+
+@push('scripts')
+{{ $dataTable->scripts(attributes: ['type' => 'module']) }}
+@endpush
+
+CONTROLLER:-------
+use App\DataTables\UsersDataTable;
+ public function index(UsersDataTable $dataTable){
+        $data['title']  = 'Users';
+        return $dataTable->render('admin.user.index', $data);
+    }
+
+========================Advance Topic =====================================
+01) 
+//Filter search for join-table-data: Example: in between ORDER and TRANSACTION table
+->filterColumn('invoice_id', function($query, $keyword){
+                $query->whereHas('order', function($query) use ($keyword){
+                    $query->where('invocie_id', 'like', "%$keyword%");
+                });
+            })
+
+
+02) 
+//Filter and SHOW Only the own(vendor's) product from orderProduct table where Admin, Vendor both has product ordered by user
+public function query(Order $model): QueryBuilder{
+        return $model::whereHas('orderProducts', function($query){
+            $query->where('vendor_id', Auth::user()->vendor->id);
+        })->newQuery();
+    }
+
+
+
+======================= DATA/BUTTON-SHOW ===================================
+
+
+
+A) ->addColumn('action', function($query) {
+            $editBtn = "<a href='". route('admin.product.edit', $query->id) ."' class='btn btn-primary btn-sm'><i class='far fa-edit'></i></a>";
+            $deleteBtn = "<a href='". route('admin.product.destroy', $query->id) ."' class='btn btn-danger btn-sm ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
+            $multiBtn = '<div class="btn-group dropleft">
+                <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-cog"></i>
+                </button>
+                <div class="dropdown-menu dropleft" x-placement="left-start" style="position: absolute; transform: translate3d(-202px, 0px, 0px); top: 0px; left: 0px; will-change: transform;">
+                <a class="dropdown-item" href="'. route('admin.product-image-gallery', ['product' => $query->id]) .'"><i class="far fa-image"></i> Image Gallery</a>
+                <a class="dropdown-item" href="'. route('admin.product-variant-index', ['product' => $query->id]) .'"><i class="far fa-file"></i> Varient</a>
+            </div>';
+
+            return $editBtn.$deleteBtn.$multiBtn;
+        })
+
+B.0) ACTIVE/INACTIVE SWITCH:----
+  ->addColumn('status', function($query) {            
+            if($query->status == '1'){
+                $button= '<label class="custom-switch mt-2">
+                <input type="checkbox" checked name="custom-switch-checkbox" data-id="'.$query->id.'" class="custom-switch-input change-status">
+                <span class="custom-switch-indicator"></span>           
+              </label>';    
+            }else {
+                $button= '<label class="custom-switch mt-2">
+                <input type="checkbox" name="custom-switch-checkbox" data-id="'.$query->id.'" class="custom-switch-input change-status">
+                <span class="custom-switch-indicator"></span>           
+              </label>';
+            }
+            return $button;
+        }) 
+
+
+B.1)ACTIVE/INACTIVE BADGE:----
+    ->addColumn('status', function($query) { 
+                $active   = '<i class="badge badge-info">Active</i>';
+                $inActive = '<i class="badge badge-danger">Inactive</i>'; 
+                if($query->status == 'active'){
+                    return $active;
+                }else {
+                    return $inActive;
+                }
+            })
+
+B.3) SELECT OPTION:-----    
+        ->addColumn('is_approved', function($query) {             
+           return 
+            "<select class='form-control is_approve' data-id='$query->id'>
+            <option value='0'>Pending</option>
+            <option value='1'>Approved</option>
+            </select>";
+    
+        }) 
+
+C) ->addColumn('image', function($query) {            
+            if(!empty($query->image)){
+                return $img = "<img width='100px' src='". asset("uploads/user_images/".$query->image) ."' ></img>";
+            }else{
+                return $img = "<img width='100px' src='". asset("default_image.jpg") ."' ></img>";
+            }
+        })
+
+D) ->addColumn('type', function($query){
+            switch ($query->product_type) {
+                case '1':
+                    return '<i class="badge badge-success">New Arrival</i>';
+                    break;
+                case '2':
+                    return '<i class="badge badge-warning">Featured Product</i>';
+                    break;
+                case '3':
+                    return '<i class="badge badge-info">Top Product</i>';
+                    break;
+
+                case '4':
+                    return '<i class="badge badge-danger">Top Product</i>';
+                    break;
+
+                default:
+                    return '<i class="badge badge-dark">None</i>';
+                    break;
+            }
+        })
+
+->rawColumns(['image', 'type','status','action'])
+            ->setRowId('id');
