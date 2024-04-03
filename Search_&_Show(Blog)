@@ -4,31 +4,51 @@ class FrontendBlogController extends Controller
 // All/Search/Category Blogs
     public function blog(Request $request){
         if ($request->has('search')) {
-            $blogs = Blog::with('categoryTable')->where('title', 'like', '%' . $request->search . '%')
-                ->where('status', 1)->orderBy('id', 'DESC')
+            $blogs = Blog::with('categoryTable')
+                ->where('title', 'like', '%' . $request->search . '%')
+                ->where('status', 1)
+                ->orderBy('id', 'DESC')
                 ->paginate(12);
         }elseif ($request->has('category')) {
             $category = BlogCategory::where('slug', $request->category)
-                ->where('status',1)->firstOrFail();
+                ->where('status',1)
+                ->firstOrFail();
 
             $blogs = Blog::with('categoryTable')->where('category_id', $category->id)
-                ->where('status', 1)->orderBy('id', 'DESC')
+                ->where('status', 1)
+                ->orderBy('id', 'DESC')
                 ->paginate(12);
         } else {
-            $blogs = Blog::with('categoryTable')->where('status', 0)->orderBy('id', 'DESC')->paginate(12);
+            $blogs = Blog::with('categoryTable')
+                ->where('status', 0)
+                ->orderBy('id', 'DESC')
+                ->paginate(12);
         }
         return view('frontend.pages.blog', compact('blogs'));
     }
     
 // Blog Details
     public function blogDetails(string $slug){
-        $blog = Blog::with('commentsTable')->where('slug', $slug)->where('status', 1)->firstOrFail();
-        $moreBlogs = Blog::where('slug', '!=', $slug)->where('status', 1)->orderBy('id', 'DESC')->take(5)->get();
-        $recentBlogs = Blog::where('slug', '!=', $slug)->where('status', 1)
-            ->where('category_id', $blog->category_id)->orderBy('id', 'DESC')->take(12)->get();
+        $blog = Blog::with('commentsTable')
+                    ->where('slug', $slug)
+                    ->where('status', 1)
+                    ->firstOrFail();
+        $moreBlogs = Blog::where('slug', '!=', $slug)
+                    ->where('status', 1)
+                    ->orderBy('id', 'DESC')
+                    ->take(5)
+                    ->get();
+        $recentBlogs = Blog::where('slug', '!=', $slug)
+                    ->where('status', 1)
+                    ->where('category_id', $blog->category_id)
+                    ->orderBy('id', 'DESC')
+                    ->take(12)
+                    ->get();
 
-        $comments = $blog->commentsTable()->paginate(20);
-        $categories = BlogCategory::where('status', 1)->get();
+        $comments = $blog->commentsTable()
+                        ->paginate(20);
+        $categories = BlogCategory::where('status', 1)
+                        ->get();
         return view('frontend.pages.blog-details', compact('blog', 'moreBlogs','recentBlogs', 'comments', 'categories'));
     }
 
