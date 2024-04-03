@@ -1,0 +1,80 @@
+
+class SettingController extends Controller{
+    use ImageUploadTrait;
+
+    public function index() {
+        $data['generalSettings'] = GeneralSetting::first();
+        $data['emailSettings'] = EmailConfiguration::first();
+        // $logoSetting = LogoSetting::first();
+        return view('admin.setting.index', $data);
+    }
+
+    public function generalSettingUpdate(Request $request){
+        $request->validate([
+            'favicon'       => ['image'],
+            'logo_header'   => ['image'],
+            'logo_footer'   => ['image'],
+            'site_name'     => ['required', 'max:200'],
+            'layout'        => ['required', 'max:200'],
+            'contact_email' => ['required', 'max:200'],
+            'currency_name' => ['required', 'max:200'],
+            'copyright'     => ['max:500'],
+            'time_zone'     => ['required', 'max:200'],
+            'currency_icon' => ['required', 'max:200'],
+        ]);
+                                                 //'logo','500,600','logo', oldImage(Get_it_from_query) 
+        $favicon    = $this->updateImage($request, 'favicon', '249,87', 'logo', $request->favicon);
+        $logoHeader = $this->updateImage($request, 'logo_header', '249,87', 'logo', $request->logo_header);
+        $logoFooter = $this->updateImage($request, 'logo_footer', '249,87', 'logo', $request->logo_footer);
+
+        GeneralSetting::updateOrCreate(
+            ['id' => 1],
+            [
+            'favicon'         => !empty($favicon)     ?   $favicon    : $request->old_favicon,
+            'logo_header'     => !empty($logoHeader)  ?   $logoHeader : "$request->old_logo_header",
+            'logo_footer'     => !empty($logoFooter)  ?   $logoFooter : "$request->old_logo_footer",
+            'site_name'       => $request->site_name,
+            'layout'          => $request->layout,
+            'contact_email'   => $request->contact_email,
+            'contact_phone'   => $request->contact_phone,
+            'contact_address' => $request->contact_address,
+            'copyright'       => $request->copyright,
+            'map'             => $request->map,
+            'currency_name'   => $request->currency_name,
+            'currency_icon'   => $request->currency_icon,
+            'time_zone'       => $request->time_zone
+            ]
+        );
+
+        return redirect()->back()->with('success', 'Data Updated successfully');
+
+    }
+
+    public function emailConfigSettingUpdate(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+            'host' => ['required', 'max:200'],
+            'username' => ['required', 'max:200'],
+            'password' => ['required', 'max:200'],
+            'port' => ['required', 'max:200'],
+            'encryption' => ['required', 'max:200'],
+        ]);
+
+         EmailConfiguration::updateOrCreate(
+            ['id' => 1],
+            [
+                'email' => $request->email,
+                'host' => $request->host,
+                'username' => $request->username,
+                'password' => $request->password,
+                'port' => $request->port,
+                'encryption' => $request->encryption,
+            ]
+        );
+
+        return redirect()->back()->with('success', 'Data Updated successfully');
+    }
+
+
+}
