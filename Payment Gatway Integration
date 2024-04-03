@@ -1,0 +1,151 @@
+
+PAYPAL INTEGRATION:
+------------------
+WEBSITE: https://srmklive.github.io/laravel-paypal/docs.html#section-2
+
+
+**FOR TESTING: Need two PayPal accounts, One is to receive money(Seller) other is a Dropbox (Buyer) account to pay.
+         Developer Main Account:-----
+             Email: bappy5128@gmail.com
+             Pass:  Mahadi@123
+         Seller/Business Account:----
+             Email: sb-s73hf29320059@business.example.com
+             Pass: {A%ct5,|
+         Personal/Buyer Account:-----
+             Email/User: sb-3fhtx29341262@personal.example.com
+             Pass:  gOE+jp&9
+
+**NEED TO KNOW About PAYPAL:-- 
+       --Configuration(Array)
+       --Create Object from Paypal-Class
+       --Built-in functions 
+       --Built-in Jason-Array
+       --Catch 1 URL from  Returned 4 URLs/Links 
+       --Catch Token, Transaction ID 
+         **and insert into Order, Order_Product, and Transaction Table and Clear the Cart-Session
+
+**MODEL & TABLE:
+         Model-Name: PaymentPaypalSetting;
+
+         CREATE TABLE payment_paypal_settings(
+           id int(1)  NOT NULL,
+           status tinyint(1) NOT NULL,
+           mode tinyint(1) NOT NULL, //**Live or Dropbox
+           country_name varchar(255) NOT NULL,
+           currency_name varchar(255) NOT NULL,
+           currency_rate double NOT NULL,
+           client_id text NOT NULL,
+           secret_key text NOT NULL,
+             created_at timestamp NULL DEFAULT NULL,
+             updated_at timestamp NULL DEFAULT NULL
+         );
+
+
+BLADE:
+    <a class="nav-link common_btn text-center" href="{{route('user.paypal-payment')}}">Pay with Paypal</a>
+
+ROUTE:
+    Route::get('paypal/payment', [PaymentController::class, 'payWithPaypal'])->name('paypal-payment');
+    Route::get('paypal/success', [PaymentController::class, 'paypalSuccess'])->name('paypal-success');
+    Route::get('paypal/cancel',  [PaymentController::class, 'paypalCancel'])->name('paypal-cancel');
+
+CONTROLLER:--
+    use Srmklive\PayPal\Services\PayPal as PayPalClient;
+
+    public function paypalConfig(){
+        //I've created this Model only for dynamically insert and get client-id, Currencty_name etc. 
+        $paypalSetting = PaymentPaypalSetting::first();
+        $config = [
+            'mode'    => $paypalSetting->mode === 1 ? 'live' : 'sandbox',
+            'sandbox' => [
+                'client_id'         => $paypalSetting->client_id,
+                'client_secret'     => $paypalSetting->secret_key,
+                'app_id'            => 'APP-80W284485P519543T',
+            ],
+            'live' => [
+                'client_id'         => $paypalSetting->client_id,
+                'client_secret'     => $paypalSetting->secret_key,
+                'app_id'            => '',
+            ],
+
+            'payment_action' => 'Sale',
+            'currency'       => $paypalSetting->currency_name,
+            'notify_url'     => '',
+            'locale'         => 'en_US',
+            'validate_ssl'   =>  true,
+        ];
+        return $config;
+    }
+
+
+ //Go to Paypal website and redirect back with message
+    public function payWithPaypal(){
+        $paypalSetting = PaymentPaypalSetting::first();
+        // calculate payable amount depending on currency rate
+        $total = getFinalPayableAmount();
+        $payableAmount = round($total*$paypalSetting->currency_rate, 2);
+
+        $config = $this->paypalConfig();
+        // Paypal Built-in
+        $provider = new PayPalClient($config);
+        $provider->getAccessToken();
+        $response = $provider->createOrder([
+            "intent" => "CAPTURE",
+            "application_context" => [
+                "return_url" => route('user.paypal-success'),
+                "cancel_url" => route('user.paypal-cancel'),
+            ],
+            "purchase_units" => [
+                [
+                    "amount" => [
+                        "currency_code" => $config['currency'],
+                        "value" => $payableAmount
+                    ]
+                ]
+            ]
+        ]);
+        // To select approve-links as paypal return 4 links with array
+        if(isset($response['id']) && $response['id'] != null){
+            foreach($response['links'] as $link){
+                if($link['rel'] === 'approve'){
+                    return redirect()->away($link['href']);
+                }
+            }
+        } else {
+            return redirect()->route('user.paypal-cancel');
+        }
+
+    }
+
+    public function paypalSuccess(Request $request){
+        $config = $this->paypalConfig();              
+        // Paypal Built-in
+        $provider = new PayPalClient($config);
+        $provider->getAccessToken();
+        $response = $provider->capturePaymentOrder($request->token);       
+
+        if (isset($response['status']) && $response['status'] == 'COMPLETED') {
+            // calculate payable amount depending on currency rate
+            $paypalSetting = PaymentPaypalSetting::first();
+            $total = getFinalPayableAmount();
+            $paidAmount = round($total*$paypalSetting->currency_rate, 2);           
+
+                //storeOrder($paymentMethod, $paymentStatus, $transactionId, $paidAmount, $paidCurrencyName)
+            $ok= $this->storeOrder('paypal', 1, $response['id'], $paidAmount, $paypalSetting->currency_name);
+            if ($ok) {
+                $this->clearSession();
+                return redirect()->route('user.payment-success');
+            }else{
+                return redirect()->route('user.payment-cancel');
+            } 
+        }
+
+        return redirect()->route('user.payment-cancel');
+    }
+
+***user.paypal-success/cancel & user.payment-success/cancel, these two are different routes, Don't get confused.
+
+    public function paypalCancel(){
+        return redirect()->route('user.payment')->with('error','Someting went wrong try agin later!');
+    }
+=============================================
