@@ -1,0 +1,14 @@
+BOOTSTRAP-ICON-PICKER:
+----------------------
+Github-Link: 
+https://victor-valencia.github.io/bootstrap-iconpicker/
+
+CDN:
+<link rel="stylesheet" href="dist/css/bootstrap-iconpicker.min.css"/>
+<script type="text/javascript" src="dist/js/bootstrap-iconpicker.bundle.min.js"></script>
+
+BLADE:--
+Insert:--
+<button name="icon"  class="btn btn-primary" role="iconpicker"  id="icon" data-selected-class="btn-danger" data-unselected-class="btn-info" > </button> 
+Update:--
+<button name="icon" data-icon="{{$category->icon}}"  id="icon"  class="btn btn-primary" role="iconpicker"  data-selected-class="btn-danger" data-unselected-class="btn-info" > </button> 
