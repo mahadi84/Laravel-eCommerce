@@ -1,0 +1,457 @@
+01. What are the TABLES with JOIN that are used to create dynamic MENU, SUB_MENU and CHILD_MENU?
+02. How to show the dynamic menu in FRONTEND(BLADE)?
+
+03. How to create a CHILD MENU with FORM with JQUERY code in Backend
+04. How to ADD PRODUCT to a Menu/Sub Menu/Child Menu?
+
+05. How to ACTIVE/INACTIVE any MENU?
+06. MAIN MENU (Category) CONTROLLER?
+
+
+
+MENU->SUB_MENU->CHILD_MENU
+***If No child-menu, stop to sub_menu ***If No sub-menu, stop to menu
+
+
+================ 01. What are the TABLES with JOIN that are used to create dynamic MENU, SUB_MENU and CHILD_MENU? ================
+CREATE TABLE categories( 
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        icon VARCHAR(255) NOT NULL,
+        name VARCHAR(200) NOT NULL UNIQUE,
+        slug VARCHAR(500) NOT NULL,
+        status tinyint(1) NOT NULL DEFAULT 1,
+  	      created_at timestamp NULL DEFAULT NULL,
+	      updated_at timestamp NULL DEFAULT NULL
+        );
+JOIN: public function subCategoryTable(){ return $this->hasMany(SubCategory::class); }
+-------
+CREATE TABLE sub_categories( 
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        category_id INT NOT NULL,
+        name VARCHAR(200) NOT NULL UNIQUE,
+        slug VARCHAR(500) NOT NULL,
+        status tinyint(1) NOT NULL,
+  	      created_at timestamp NULL DEFAULT NULL,
+	      updated_at timestamp NULL DEFAULT NULL
+        );
+JOIN-1: public function categoryTable(){return $this->belongsTo(Category::class, 'category_id', 'id'); }
+JOIN-2: public function childCategoryTable(){ return $this->hasMany(ChildCategory::class);  }
+
+------
+
+CREATE TABLE child_categories( 
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        category_id INT NOT NULL,
+        sub_category_id INT NOT NULL,
+        name VARCHAR(200) NOT NULL UNIQUE,
+        slug VARCHAR(500) NOT NULL,
+        status tinyint(1) NOT NULL,
+  	      created_at timestamp NULL DEFAULT NULL,
+	      updated_at timestamp NULL DEFAULT NULL
+        );
+
+JOIN-1: public function categoryTable(){return $this->belongsTo(Category::class, 'category_id', 'id'); }
+JOIN-2: public function subCategoryTable(){ return $this->belongsTo(SubCategory::class, 'sub_category_id', 'id'); }
+
+=============================== 02. How to show the dynamic menu in FRONTEND(BLADE)? ============================
+@php
+    $categories = \App\Models\Category::where('status', 1)
+    ->with(['subCategoryTable' => function($query){
+        $query->where('status', 1)
+        ->with(['childCategoryTable' => function($query){
+            $query->where('status', 1);
+        }]);
+    }])
+    ->get();
+@endphp
+<nav>
+<ul class="wsus_menu_cat_item show_home toggle_menu">
+        @forelse($categories as $cat)
+            <li><a class=" {{ count($cat->subCategoryTable) > 0 ? 'wsus__droap_arrow' : '' }}" href="{{route('products.index',['category'=>$cat->slug])}}"><i class="{{$cat->icon}}"></i> {{$cat->name}} </a>
+            @if(count($cat->subCategoryTable) > 0 )                          
+                <ul class="wsus_menu_cat_droapdown"> 
+                    @foreach($cat->subCategoryTable as $subCat)                             
+                        <li><a href="{{route('products.index',['sub_category'=>$subCat->slug])}}">{{ $subCat->name}} <i class="{{ count($subCat->childCategoryTable) > 0 ? 'fas fa-angle-right' : '' }}"></i></a>
+                        @if( count($subCat->childCategoryTable) > 0)
+                            <ul class="wsus__sub_category">     
+                            @foreach($subCat->childCategoryTable as $childCat)                                                                           
+                               <li><a href="{{route('products.index',['child_category'=>$childCat->slug])}}">{{$childCat->name}}</a> </li>                                        
+                            @endforeach
+                            </ul>
+                        @endif
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+            </li>
+        @empty                        
+        @endforelse
+  <!-- <li><a href="#"><i class="fas fa-home-lg-alt"></i> Home & Garden</a></li> -->
+</ul>
+</nav>
+
+================================ 03. How to create a CHILD MENU with FORM with JQUERY code in Backend? ===========================================
+
+<div class='row'>
+<div class="col-md-4">
+    <div class="mb-3">
+        <label for="category_id" class="form-label">Category Name</label>
+        <select class="form-control main-category" name="category_id" >
+        <option selected disabled>Select category name</option>
+        @forelse($category as $cat)
+           <option value="{{ $cat->id }}" {{ ( old('category_id') == $cat->id ) ? ' selected' : '' }}>{{ $cat->name }}</option>
+        @empty
+          <option> 'No Users available in Database' </option>                              
+        @endforelse                         
+    </select>
+        <span class="text-danger">{{ $errors->first('category_id') }}</span>  
+    </div>
+</div>
+</div> <!---end row--->
+
+<div class='row'>
+<div class="col-md-4">
+    <div class="mb-3">
+        <label for="name" class="form-label">Select Sub Category</label>
+        <select class="form-control sub-category" name="sub_category_id" >
+        <option selected disabled>Select sub category</option>         
+    </select>
+    </div>
+</div>
+
+</div> <!---end row--->
+
+----------------
+
+@push('scripts')
+<script>
+        $(document).ready(function(){
+            $('body').on('change', '.main-category', function(e){
+                let id = $(this).val();
+
+                $.ajax({
+                    method: 'GET',
+                    url: "{{route('admin.subcategory.get-sub-categories')}}",
+                    data: {
+                        id:id
+                    },
+                    success: function(data){
+                        $('.sub-category').html('<option value="">Select Sub Category</option>')
+
+                        $.each(data, function(i, item){
+                            $('.sub-category').append(`<option value="${item.id}">${item.name}</option>`)
+                        })
+                    },
+                    error: function(xhr, status, error){
+                        console.log(error);
+                    }
+                })
+            })
+        });
+
+</script>
+@endpush
+
+
+=============================== 04. How to ADD PRODUCT to a MENU/Sub Menu/Child Menu? =========================================
+<div class='row'>
+
+<div class="col-md-4">
+    <div class="mb-3">
+        <label for="category_id" class="form-label">Category</label>
+        <select class="form-control main-category" name="category_id" >
+          <option selected disabled>Select category</option>
+          @forelse($categories as $category)
+            <option value="{{ $category->id }}">{{ $category->name }}</option>
+          @empty
+            <option> 'No Users available in Database' </option>                              
+          @endforelse                         
+       </select>
+        <span class="text-danger">{{ $errors->first('category_id') }}</span>  
+    </div>
+</div>
+
+<div class="col-md-4">
+    <div class="mb-3">
+        <label for="sub_category_id" class="form-label" >Sub Category</label>
+        <select class="form-control sub-category" name="sub_category_id" >
+          <option value=''>Select sub category</option>
+        </select>
+        <span class="text-danger">{{ $errors->first('sub_category_id') }}</span>  
+    </div>
+</div>
+
+<div class="col-md-4">
+    <div class="mb-3">
+        <label for="child_category_id" class="form-label">Child Category</label>
+        <select class="form-control child-category" name="child_category_id" >
+          <option value=''>Select child category</option>
+        </select>
+        <span class="text-danger">{{ $errors->first('child_category_id') }}</span>  
+    </div>
+</div>
+
+</div> <!---end row--->
+
+---------------
+@push('scripts')
+        <script>
+                $(document).ready(function(){
+                  // Category   
+                    $('body').on('change', '.main-category', function(e){
+                        let id = $(this).val();
+
+                        $.ajax({
+                            method: 'GET',
+                            url: "{{route('admin.product.get-sub-categories')}}",
+                            data: {
+                                id:id
+                            },
+                            success: function(data){
+                                $('.sub-category').html('<option value="">Select Sub Category</option>')
+        
+                                $.each(data, function(i, item){
+                                    $('.sub-category').append(`<option value="${item.id}">${item.name}</option>`)
+                                })
+                            },
+                            error: function(xhr, status, error){
+                                console.log(error);
+                            }
+                        })
+                    })
+        
+                   // Sub Category and Child Category        
+                   $('body').on('change', '.sub-category', function(e){
+                        let id = $(this).val();
+        
+                        $.ajax({
+                            method: 'GET',
+                            url: "{{route('admin.product.get-child-categories')}}",
+                            data: {
+                                id:id
+                            },
+                            success: function(data){
+                                $('.child-category').html('<option value="">Select Child Category</option>')
+        
+                                $.each(data, function(i, item){
+                                    $('.child-category').append(`<option value="${item.id}">${item.name}</option>`)
+                                })
+                            },
+                            error: function(xhr, status, error){
+                                console.log(error);
+                            }
+                        })
+                    })
+        
+                });
+        </script>
+@endpush
+=============================================== 05. How to ACTIVE/INACTIVE any MENU? ===================================================
+
+ROUTE(RESOURCE): 
+Route::get('get-sub-categories',  [SubCategoryController::class, 'getSubCategories'])->name('subcategory.get-sub-categories');
+Route::put('sub-change-status', [SubCategoryController::class, 'subChangeStatus'])->name('subcategory.change-status');
+Route::resource('sub-category', SubCategoryController::class);
+
+CONTROLLER(RESOURCE):
+public function childChangeStatus(Request $request){
+    $childCategory= ChildCategory::findOrFail($request->id);
+    $childCategory->status= $request->status == 'true' ? 1: 0;
+    if ($childCategory->save()) {
+        return response(['status'=> 'success', 'message' => 'Status Changed Successfully']); 
+     }else{
+        return response(['status'=> 'error', 'message' => 'Faild...!']);  
+    }
+    
+}
+
+BLADE-SCRIPT:-
+ 		<div class="form-group">
+                    <label for="">Status</label>
+                    <br>
+                    <label class="custom-switch mt-2">
+                        <input type="checkbox" {{@$childCategory->status == 1 ? 'checked':''}} name="custom-switch-checkbox" class="custom-switch-input change-status" >
+                        <span class="custom-switch-indicator"></span>
+                    </label>
+                </div>
+OR 
+Datatable:---
+ ->addColumn('status', function($query) {            
+            if($query->status == '1'){
+                $button= '<label class="custom-switch mt-2">
+                <input type="checkbox" checked name="custom-switch-checkbox" data-id="'.$query->id.'" class="custom-switch-input change-status">
+                <span class="custom-switch-indicator"></span>           
+              </label>';
+    
+            }else {
+                $button= '<label class="custom-switch mt-2">
+                <input type="checkbox" name="custom-switch-checkbox" data-id="'.$query->id.'" class="custom-switch-input change-status">
+                <span class="custom-switch-indicator"></span>           
+              </label>';
+            }
+            return $button;
+        })
+
+@push('scripts')
+{{ $dataTable->scripts(attributes: ['type' => 'module']) }}
+<script>
+$(document).ready(function(){       
+        $('body').on('click', '.change-status', function(){
+            let id = $(this).data('id');
+            let isChecked = $(this).is(':checked');
+          
+            $.ajax({
+              url: "{{route('admin.childcategory.change-status')}}",
+              method: 'PUT',
+                
+              data: {
+                id: id,
+                status: isChecked
+              },
+
+              success: function(data){
+                toastr.success(data.message);
+              },
+              error: function(xhr, status, error){
+                toastr.error(data.message);
+                console.log(error);
+              }
+            })          
+        })
+      });
+</script>
+@endpush
+
+===================================== 06. MAIN MENU (Category) CONTROLLER? =====================================
+<?php
+
+namespace App\Http\Controllers\Backend;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+use App\DataTables\CategoryDataTable;
+
+use App\Models\Category;
+use App\Models\SubCategory;
+
+use Str;
+
+
+class CategoryController extends Controller{
+  
+    
+//------------------Index DATATABLE ---------------------
+    
+    public function index(CategoryDataTable $dataTable){  //**check DataTable Name
+        $data['title']  = 'Category';
+        return $dataTable->render('admin.category.index', $data);
+    }
+
+    
+//---------------------create method -----------------------
+    
+    public function create(){
+            $data['title'] = 'Add';
+            return view('admin.category.create', $data);
+    }
+    
+    
+//---------------------store method -----------------------
+    
+    public function store(Request $request){
+       $category=  new Category;
+       $request->validate([
+                          'icon'   =>  ['required'],
+                          'name'   =>  ['required', 'unique:categories'],
+                          'status' =>  ['required'],
+                         // 'email'  => ['required',email,unique:category,id,'.$category->id], ***check_table_name
+                        ]);
+    
+    
+         $category->icon = trim($request->icon);
+         $category->name = trim($request->name);
+         $category->slug = Str::slug($request->name);
+         $category->status = trim($request->status);
+    
+         if ($category->save()) {
+            return redirect()->back()->with('success', 'Data Insert successfull.');  
+         }else{
+            return redirect()->back()->with('error', 'Faild...!!');
+              }
+    }
+    
+    
+//---------Display the specified resource.
+
+    public function show(string $id){       
+    }
+    
+//----------------------edit method-------------------
+    
+    
+    public function edit(Request $request, string $id){
+            $data['title'] = 'Edit';
+            $data['category'] = Category::findOrFail($id);
+            return view('admin.category.edit', $data);
+        }
+    
+    
+//----------------------update method-------------------
+    
+    
+    public function update(Request $request, string $id){
+       $category= Category::findOrFail($id);
+       $request->validate([
+                    'icon'   => ['required'],
+                    'name'   => ['required', 'unique:categories,name,'.$category->id.''],
+                    'status' => ['required'],
+                    ]); 
+
+         $category->icon = trim($request->icon);
+         $category->name = trim($request->name);
+         $category->slug = Str::slug($request->name);
+         $category->status = trim($request->status);
+    
+         if ($category->save()) {
+            return redirect()->route('admin.category.index')->with('success', 'Update successfull.');  
+         }else{
+            return redirect()->route('admin.category.index')->with('error', 'Faild...!!');
+        }
+    }
+    
+    
+//---------------------delete method---------------------------
+    
+    
+    public function destroy(string $id){ 
+    
+                $category    = Category::findOrFail($id);
+                $subCategory = SubCategory::where('category_id', $category->id)->count();
+
+                if( $subCategory > 0){                            
+                    return response(["status"=> "error", "message" => "Delete the Sub Category first"]);            
+                }else{
+                    $category->delete();  
+                    return response(["status"=> "success", "message" => "Deleted Successfully"]);           
+                }
+                
+    }
+
+
+
+// ------------------acive/inactive------------------
+    
+    public function changeStatus(Request $request){
+        $category= Category::findOrfail($request->id);
+        $category->status= $request->status == 'true' ? 1: 0;
+        if ($category->save()) {
+            return response(['status'=> 'success', 'message' => 'Status Changed Successfully']); 
+         }else{
+            return response(['status'=> 'error', 'message' => 'Faild...!']);  
+        }
+        
+    }
+
+
+}
