@@ -1,3 +1,7 @@
+--CREATE a file Config/anyname.php with below data
+--ADD "Config::set('app.timezone', $generalSetting->time_zone);" into App\AppServiceProvider.php without quotation
+
+
 <?php
 
 return  [
