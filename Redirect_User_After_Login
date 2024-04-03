@@ -1,6 +1,7 @@
 Redirect_Page_After_Login_AS_Per_Role
 
-====================Add below lines-(Breez)AuthenticatedSessionController.php=====================
+========================== Page Rdirects  =================================
+-------Add below lines-(Breez)AuthenticatedSessionController.php-----------------
 
  public function store(LoginRequest $request): RedirectResponse{
         $request->authenticate();
@@ -12,12 +13,11 @@ Redirect_Page_After_Login_AS_Per_Role
             }elseif ($request->user()->role == 'vendor'){
                 return redirect()->intended('vendor/dashboard')->with('success', 'Login Successfuly');
             }
-
         return redirect()->intended(RouteServiceProvider::HOME)->with('success', 'Login Successfuly');
     }
 
 
-=====================IF I want to change Route Redirects ====================================
+=====================Route Redirects ====================================
 ---------Add below line to App\Providers\RouteServiceProvider---------
 
 $this->routes(function () {
