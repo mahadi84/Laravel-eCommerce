@@ -57,7 +57,7 @@ checkDiscount($product),checkDiscountPercentage($originalPrice, $offerPrice),
 cartProductTotalPriceHelpherFn(),payableCartTotal(), couponDiscountAmmount(),
 getShppingFee(), getFinalPayableAmount(),  limitText($text, $limit = 20)
 
------- Other Menus -------
+------ OTHER MENUs -------
 Vendor Shop | Flash Sale | Products | Blog | T&C | Contact | Track Order | My Account                   | Wishlist | Cart 
 
 ================= CART =========================
