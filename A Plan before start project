@@ -3,17 +3,17 @@
 ==============COMMON FOR ALL WEBSITE/APP==============
 
 -------Frontend---------
---> Create Master layout with all CSS, JAVASCRIPT and CDN
---> Login page and Registration form
---> Header (Dynamic Logo, mobile/email)
---> Menu (Category >Sub-Category >Child-Category)
---> Footer (Grid/Columns with Grid title)
+  --> Create Master layout with all CSS, JAVASCRIPT and CDN
+  --> Login page and Registration form
+  --> Header (Dynamic Logo, mobile/email)
+  --> Menu (Category >Sub-Category >Child-Category)
+  --> Footer (Grid/Columns with Grid title)
 
 -----Backend--------
---> Create Master layout with all CSS, JAVASCRIPT and CDN
---> Admin Dashboard
---> SiteSettings (phone, email, address, google_Map, social_links, favicon_icon, logo(s), time_zone, copyright-text)
---> Email Settings (host, smpt username, smtp password, port, encryption(TLS/SSL))
+  --> Create Master layout with all CSS, JAVASCRIPT and CDN
+  --> Admin Dashboard
+  --> SiteSettings (phone, email, address, google_Map, social_links, favicon_icon, logo(s), time_zone, copyright-text)
+  --> Email Settings (host, smpt username, smtp password, port, encryption(TLS/SSL))
 
 ----PACKAGEs:------ 
 1>Intervention Image 2>Yajra Datatable 3>gloudemans/shoppingcart 4> Mailtrap 5>Paypal
