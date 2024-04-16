@@ -16,6 +16,10 @@
   --> SiteSettings (phone, email, address, google_Map, social_links, favicon_icon, logo(s), time_zone, copyright-text)
   --> Email Settings (host, smpt username, smtp password, port, encryption(TLS/SSL))
 
+---- HELPHER --------
+MailHelphers.php
+Push mail settings info into config file to change default mail settings
+
 ----PACKAGEs:------ 
 1>Intervention Image 2>Yajra Datatable 3>gloudemans/shoppingcart 4> Mailtrap 5>Paypal
 
@@ -36,9 +40,7 @@
 09. Wishlist
 10. Order
 
----- HELPHER --------
-MailHelphers.php
-Push mail settings info into config file to change default mail settings
+
 
 =============== FRONT END =============================
 [HOME PAGE]
