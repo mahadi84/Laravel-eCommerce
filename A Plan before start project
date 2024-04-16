@@ -1,12 +1,15 @@
 
 
 ==============COMMON FOR ALL WEBSITE/APP==============
+--> Create Master layout with all CSS,JAVASCRIPT and CDN
+--> Login page and Registration form
+--> Header (Dynamic Logo, mobile/email)
+--> Menu (Category >Sub-Category >Child-Category)
+--> Footer (Grid/Columns with Grid title)
+
 --> SiteSettings (phone, email, address, google_Map, social_links, favicon_icon, logo(s), time_zone, copyright-text)
 --> Email Settings (host, smpt username, smtp password, port, encryption(TLS/SSL))
---> Header
---> Menu (Category >Sub-Category >Child-Category)
---> Footer
---> Login page and Registration form
+--> Simple Dashboard
 
 -----PACKAGEs------: 1>Intervention Image 2>Yajra Datatable 3>Gloudemans ShoppingCart 4> Mailtrap 5>Paypal
 
