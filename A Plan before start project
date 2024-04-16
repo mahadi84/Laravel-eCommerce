@@ -20,11 +20,11 @@
 1>Intervention Image 2>Yajra Datatable 3>gloudemans/shoppingcart 4> Mailtrap 5>Paypal
 
 
-============== FEATURES =======================
+============== BACKEND (FEATURES) =======================
 01. USERs(Admin, Vendor, User)
-        -Generate, Send Token to verify email
-        -Insert Lower(Name, Email)
-        -Show sentence upper(Name)
+        - Generate,Send Verification_Token to verify email
+        - Insert Lower(Name, Email)
+        - Show sentence upper(Name)
 
 02. Vendor (Request to be a Vendor)
 03. Create Vendor's Shop
