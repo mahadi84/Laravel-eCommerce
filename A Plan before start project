@@ -2,7 +2,7 @@
 
 ==============COMMON FOR ALL WEBSITE/APP==============
 --> SiteSettings (phone, email, address, google_Map, social_links, favicon_icon, logo(s), time_zone, copyright-text)
---> Email Settings
+--> Email Settings (host, smpt username, smtp password, port, encryption(TLS/SSL))
 --> Header
 --> Menu (Category >Sub-Category >Child-Category)
 --> Footer
