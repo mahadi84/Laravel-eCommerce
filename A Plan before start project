@@ -1,0 +1,59 @@
+
+
+==============COMMON FOR ALL WEBSITE/APP==============
+--> SiteSettings (phone, email, address, google_Map, social_links, favicon_icon, logo(s), time_zone, copyright-text)
+--> Email Settings
+--> Header
+--> Menu (Category >Sub-Category >Child-Category)
+--> Footer
+--> Login page and Registration form
+
+-----PACKAGEs------: 1>Intervention Image 2>Yajra Datatable 3>Gloudemans ShoppingCart 4> Mailtrap 5>Paypal
+
+
+============== FEATURES =======================
+01. USERs(Admin, Vendor, User)
+        -Generate, Send Token to verify email
+        -Insert Lower(Name, Email)
+        -Show sentence upper(Name)
+
+02. Dashboard for different Users
+03. Redirect User After login(Route Middleware)
+04. Brands(Apple, HP, DELL etc)
+05. Vendor (Request to be a Vendor)
+06. Create Vendor's Shop
+07. Products(name, slug, image, category, brands etc)
+08. Flash Sale
+09. Coupon Code
+10. Shipping Fee
+11. Wishlist
+12. Order
+
+=============== FRONT END =============================
+[HOME PAGE]
+>Banner >Flash Sale >Popular Categories of the Month
+>Brand Slider >2 Banners >Menu with Type of Products (exm: New Arrival, Top Product etc) 
+>3 Banners >Laptops >Mobiles >1 Banner 
+>Weekly Best Rated Product  <- ->
+
+------ Other Menus -------
+Vendor Shop | Flash Sale | Products | Blog | T&C | Contact | Track Order | My Account                   | Wishlist | Cart 
+
+================= CART =========================
+> Add Product to Cart
+> View Cart
+> + 1 - 
+
+================= CHECKOUT  =================
+>Add Address > Shipping Fee > T&C
+[PLACE ORDER]
+
+================= PAYMENT GATEWAY ==========
+Paypal, Rozar Pay, COD,
+
+
+
+-
+
+
+
