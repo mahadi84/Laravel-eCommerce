@@ -22,7 +22,7 @@
 
 ============== BACKEND (FEATURES) =======================
 01. USERs(Admin, Vendor, User)
-        - Generate,Send Verification_Token to verify email
+        - Generate and Send Verification_Token to verify email
         - Insert Lower(Name, Email)
         - Show sentence upper(Name)
 
@@ -36,12 +36,22 @@
 09. Wishlist
 10. Order
 
+---- HELPHER --------
+MailHelphers.php
+Push mail settings info into config file to change default mail settings
+
 =============== FRONT END =============================
 [HOME PAGE]
 >Banner >Flash Sale >Popular Categories of the Month
 >Brand Slider >2 Banners >Menu with Type of Products (exm: New Arrival, Top Product etc) 
 >3 Banners >Laptops >Mobiles >1 Banner 
 >Weekly Best Rated Product  [<-] [->]
+
+---- HELPHER --------
+helphers.php
+checkDiscount($product),checkDiscountPercentage($originalPrice, $offerPrice), 
+cartProductTotalPriceHelpherFn(),payableCartTotal(), couponDiscountAmmount(),
+getShppingFee(), getFinalPayableAmount(),  limitText($text, $limit = 20)
 
 ------ Other Menus -------
 Vendor Shop | Flash Sale | Products | Blog | T&C | Contact | Track Order | My Account                   | Wishlist | Cart 
