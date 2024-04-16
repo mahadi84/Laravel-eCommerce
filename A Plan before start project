@@ -4,10 +4,10 @@
 
 -------Frontend---------
   --> Create Master layout with all CSS, JAVASCRIPT and CDN
-  --> Login page and Registration form
   --> Header (Dynamic Logo, mobile/email)
   --> Menu (Category >Sub-Category >Child-Category)
   --> Footer (Grid/Columns with Grid title)
+  --> Login page and Registration form
 
 -----Backend--------
   --> Redirect User After login(Route Middleware)
