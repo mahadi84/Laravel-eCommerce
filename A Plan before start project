@@ -12,7 +12,7 @@
 -----Backend--------
   --> Redirect User After login(Route Middleware)
   --> Create Master layout with all CSS, JAVASCRIPT and CDN
-  --> Admin/Vendor/User Dashboard
+  --> Dashboard (Admin/Vendor/User) 
   --> SiteSettings (phone, email, address, google_Map, social_links, favicon_icon, logo(s), time_zone, copyright-text)
   --> Email Settings (host, smpt username, smtp password, port, encryption(TLS/SSL))
 
