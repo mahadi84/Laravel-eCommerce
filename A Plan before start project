@@ -10,8 +10,9 @@
   --> Footer (Grid/Columns with Grid title)
 
 -----Backend--------
+  --> Redirect User After login(Route Middleware)
   --> Create Master layout with all CSS, JAVASCRIPT and CDN
-  --> Admin Dashboard
+  --> Admin/Vendor/User Dashboard
   --> SiteSettings (phone, email, address, google_Map, social_links, favicon_icon, logo(s), time_zone, copyright-text)
   --> Email Settings (host, smpt username, smtp password, port, encryption(TLS/SSL))
 
@@ -25,17 +26,15 @@
         -Insert Lower(Name, Email)
         -Show sentence upper(Name)
 
-02. Dashboard for different Users
-03. Redirect User After login(Route Middleware)
+02. Vendor (Request to be a Vendor)
+03. Create Vendor's Shop
 04. Brands(Apple, HP, DELL etc)
-05. Vendor (Request to be a Vendor)
-06. Create Vendor's Shop
-07. Products(name, slug, image, category, brands etc)
-08. Flash Sale
-09. Coupon Code
-10. Shipping Fee
-11. Wishlist
-12. Order
+05. Products(name, slug, image, category, brands etc)
+06. Flash Sale
+07. Coupon Code
+08. Shipping Fee
+09. Wishlist
+10. Order
 
 =============== FRONT END =============================
 [HOME PAGE]
