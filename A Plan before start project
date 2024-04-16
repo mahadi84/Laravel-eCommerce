@@ -26,8 +26,8 @@
         - Insert Lower(Name, Email)
         - Show sentence upper(Name)
 
-02. Vendor (Request to be a Vendor)
-03. Create Vendor's Shop
+02. Vendor
+03. Vendor's Shop
 04. Brands(Apple, HP, DELL etc)
 05. Products(name, slug, image, category, brands etc)
 06. Flash Sale
