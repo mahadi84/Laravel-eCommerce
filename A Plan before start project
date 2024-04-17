@@ -15,9 +15,9 @@
   --> Redirect User After login(Route Middleware)
   --> SiteSettings (phone, email, address, google_Map, social_links, favicon_icon, logo(s), time_zone, copyright-text)
   --> Email Settings (host, smpt username, smtp password, port, encryption(TLS/SSL))
-  --> Category
+  --> Category/Menu
   --> Footer
-  --> Header, Footer, Menu
+  --> Header, Footer, Menu (Show it dynamicaly)
 
 ---- HELPHER --------
 MailHelphers.php
