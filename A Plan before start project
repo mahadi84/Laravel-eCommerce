@@ -2,19 +2,22 @@
 
 ==============COMMON FOR ALL WEBSITE/APP==============
 
--------Frontend---------
+-------Frontend(Static)---------
   --> Create Master layout with all CSS, JAVASCRIPT and CDN
   --> Header (Dynamic Logo, mobile/email)
   --> Menu (Category >Sub-Category >Child-Category)
   --> Footer (Grid/Columns with Grid title)
   --> Login page and Registration form
 
------Backend--------
-  --> Redirect User After login(Route Middleware)
+-----Backend (Dynamic)--------
   --> Create Master layout with all CSS, JAVASCRIPT and CDN
   --> Dashboard (Admin/Vendor/User) 
+  --> Redirect User After login(Route Middleware)
   --> SiteSettings (phone, email, address, google_Map, social_links, favicon_icon, logo(s), time_zone, copyright-text)
   --> Email Settings (host, smpt username, smtp password, port, encryption(TLS/SSL))
+  --> Category
+  --> Footer
+  --> Header, Footer, Menu
 
 ---- HELPHER --------
 MailHelphers.php
@@ -24,7 +27,7 @@ Push mail settings info into config file to change default mail settings
 1>Intervention Image 2>Yajra Datatable 3>gloudemans/shoppingcart 4> Mailtrap 5>Paypal
 
 
-============== BACKEND (FEATURES) =======================
+============== FEATURES =======================
 01. USERs(Admin, Vendor, User)
         - Generate and Send Verification_Token to verify email
         - Insert Lower(Name, Email)
