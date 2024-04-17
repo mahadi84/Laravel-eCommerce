@@ -19,8 +19,7 @@
   --> Footer
   --> Header, Footer, Menu (Show it dynamicaly)
 
----- HELPHER --------
-MailHelphers.php
+---- HELPHER (MailHelphers.php) --------
 Push mail settings info into config file to change default mail settings
 
 ----PACKAGEs:------ 
@@ -54,8 +53,7 @@ Push mail settings info into config file to change default mail settings
 >3 Banners >Laptops >Mobiles >1 Banner 
 >Weekly Best Rated Product  [<-] [->]
 
----- HELPHER --------
-helphers.php
+---- HELPHER(helphers.php) --------
 checkDiscount($product),checkDiscountPercentage($originalPrice, $offerPrice), 
 cartProductTotalPriceHelpherFn(),payableCartTotal(), couponDiscountAmmount(),
 getShppingFee(), getFinalPayableAmount(),  limitText($text, $limit = 20)
